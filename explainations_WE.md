@@ -1,4 +1,4 @@
-#Word Embeddings in NLP
+# Word Embeddings in NLP
 
 
 ## word2vec
