@@ -88,7 +88,7 @@ At the beginning of training, the word embeddings (weights) are **randomly initi
 - Example:
   - Random embedding for "cat" (center word): `[0.1, -0.3, 0.5]`.
   - Random embedding for "sat" (context word): `[-0.4, 0.2, 0.6]`.
-  - Dot Product (similarity): \( 0.1 \times -0.4 + (-0.3) \times 0.2 + 0.5 \times 0.6 = -0.04 - 0.06 + 0.3 = 0.2 \).
+  - ![image](https://github.com/user-attachments/assets/044f251e-f139-4c08-adec-16e85e5e7369)
 
 ---
 
@@ -111,36 +111,14 @@ At the beginning of training, the word embeddings (weights) are **randomly initi
   - Apply the **softmax function** to get probabilities.
 
   Example:
-  - Raw Scores (similarities): `[1.2, 0.7, 2.1, 0.3]` (for ["cat", "dog", "sat", "mat"]).
-  - Softmax Probabilities: 
-    \[
-    \text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}
-    \]
-    After applying softmax:
-    \[
-    [0.2, 0.1, 0.6, 0.1]
-    \]
+  ![image](https://github.com/user-attachments/assets/faea50f2-08d0-4875-b97a-388228e8232f)
+
 
 - **Loss Function**:
   - Use **cross-entropy loss** to compare the predicted probabilities to the true one-hot vector.
   - Formula:
-    \[
-    \text{Loss} = -\sum_{i=1}^{V} y_i \cdot \log(\hat{y}_i)
-    \]
-    Where:
-    - \( y_i \): True label (1 for "sat", 0 for others).
-    - \( \hat{y}_i \): Predicted probability for each word.
+    ![image](https://github.com/user-attachments/assets/ecfb4485-c96b-4407-8553-7ae73dbad9b9)
 
-  Example:
-  - True one-hot vector for "sat": `[0, 0, 1, 0]`.
-  - Predicted probabilities: `[0.2, 0.1, 0.6, 0.1]`.
-  - Loss:
-    \[
-    \text{Loss} = -(0 \cdot \log(0.2) + 0 \cdot \log(0.1) + 1 \cdot \log(0.6) + 0 \cdot \log(0.1))
-    \]
-    \[
-    \text{Loss} = -\log(0.6) \approx 0.51
-    \]
 
 ---
 
@@ -206,21 +184,8 @@ Example:
 #### Step 1: Calculate Similarity Scores  
 To predict context words for `"cat"`, compute the **dot product** between `"cat"`’s embedding and the embeddings of all words in the vocabulary.
 
-\[
-\text{Similarity} = \text{center embedding} \cdot \text{vocabulary embedding}
-\]
-
-Example:  
-- Dot product of `"cat"` and `"The"`:  
-  \[
-  (0.6 \times 0.2) + (0.8 \times -0.1) + (-0.3 \times 0.5) = 0.12 - 0.08 - 0.15 = -0.11
-  \]  
-- Repeat for all vocabulary words.
-
-Resulting scores (random values due to random embeddings):
-\[
-[-0.11, 1.06, -0.23, 0.42, 0.15, -0.03]
-\]  
+![image](https://github.com/user-attachments/assets/1c50e6f9-808d-4fb1-8a65-2ea8d264f2f9)
+ 
 These scores represent how similar each word is to `"cat"` in this random initialization.
 
 ---
@@ -228,24 +193,8 @@ These scores represent how similar each word is to `"cat"` in this random initia
 #### Step 2: Apply Softmax  
 Convert these similarity scores into probabilities using the **softmax function**:
 
-\[
-\text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}
-\]
+![image](https://github.com/user-attachments/assets/fa08b1ad-d59a-4cd4-8a7f-e53229160bc1)
 
-Example:  
-- Exponentials:  
-  \[
-  e^{[-0.11, 1.06, -0.23, 0.42, 0.15, -0.03]} = [0.89, 2.89, 0.80, 1.52, 1.16, 0.97]
-  \]
-- Normalize to get probabilities:
-  \[
-  \frac{[0.89, 2.89, 0.80, 1.52, 1.16, 0.97]}{\sum [0.89, 2.89, 0.80, 1.52, 1.16, 0.97]} = [0.10, 0.34, 0.09, 0.18, 0.14, 0.11]
-  \]
-
-Predicted probabilities:  
-\[
-[0.10, 0.34, 0.09, 0.18, 0.14, 0.11]
-\]
 
 ---
 
@@ -254,33 +203,17 @@ Predicted probabilities:
 For the first context word `"The"`:
 - Vocabulary index: 0 (based on the vocabulary order).
 - True label (one-hot vector):  
-  \[
+
   [1, 0, 0, 0, 0, 0]
-  \]
+  
 
 ---
 
 #### Loss Calculation (Cross-Entropy Loss)  
 The loss measures the difference between the **predicted probabilities** and the **true labels**:
 
-\[
-\text{Loss} = -\sum_{i=1}^{V} y_i \cdot \log(\hat{y}_i)
-\]
+![image](https://github.com/user-attachments/assets/da6e2dea-8d4a-4723-9464-59bfec505d64)
 
-Where:  
-- \( y_i \): True label (1 for the correct word, 0 for others).  
-- \( \hat{y}_i \): Predicted probability for word \( i \).
-
-Example:  
-- Predicted probabilities: `[0.10, 0.34, 0.09, 0.18, 0.14, 0.11]`.  
-- True label for `"The"`: `[1, 0, 0, 0, 0, 0]`.  
-- Loss:  
-  \[
-  \text{Loss} = -(1 \cdot \log(0.10) + 0 \cdot \log(0.34) + 0 \cdot \log(0.09) + \dots)
-  \]
-  \[
-  \text{Loss} = -\log(0.10) \approx 2.3
-  \]
 
 ---
 
@@ -304,45 +237,14 @@ The process is repeated for all center-context pairs in the corpus, gradually im
 ### **1. Cross-Entropy Loss**
 
 #### **Purpose**  
-Cross-entropy measures the difference between the predicted probability distribution (\(\hat{y}\)) and the true probability distribution (\(y\)).
-
-In word2vec:  
-- **Predicted probabilities** (\(\hat{y}\)): Softmax output for the vocabulary.  
-- **True probabilities** (\(y\)): One-hot encoding of the correct context word.  
-
-#### **Formula**  
-\[
-\text{Loss} = -\sum_{i=1}^{V} y_i \cdot \log(\hat{y}_i)
-\]  
-
-Where:  
-- \(V\): Vocabulary size.  
-- \(y_i\): True label for the \(i\)-th word (1 for the correct word, 0 for others).  
-- \(\hat{y}_i\): Predicted probability for the \(i\)-th word.
+![image](https://github.com/user-attachments/assets/0e9f815d-4cd2-4c21-ab19-26e8faa1eb0f)
 
 ---
 
 #### **Example**  
 
-Vocabulary: \(["The", "cat", "sat", "on", "the", "mat"]\)  
-Center word: `"cat"`  
-Context word: `"The"`  
-Softmax output (predicted probabilities):  
-\[
-\hat{y} = [0.10, 0.34, 0.09, 0.18, 0.14, 0.11]
-\]  
-True label (one-hot vector):  
-\[
-y = [1, 0, 0, 0, 0, 0]
-\]  
+![image](https://github.com/user-attachments/assets/26978725-5a77-48d9-a97d-40ed3bd4a91e)
 
-**Loss for this pair**:  
-\[
-\text{Loss} = -(1 \cdot \log(0.10) + 0 \cdot \log(0.34) + \dots)
-\]  
-\[
-\text{Loss} = -\log(0.10) \approx 2.3
-\]  
 
 For multiple center-context pairs, average the losses to compute the overall loss for a batch or epoch.
 
@@ -358,18 +260,7 @@ Adjust embeddings to minimize the cross-entropy loss. Backpropagation computes *
 #### **Steps**  
 
 1. **Compute Gradient of Loss w.r.t. Predicted Probabilities**:  
-For the softmax probabilities (\(\hat{y}\)), the gradient is:  
-\[
-\frac{\partial \text{Loss}}{\partial \hat{y}_i} = \hat{y}_i - y_i
-\]  
-
-For the example:
-- Predicted (\(\hat{y}\)): \([0.10, 0.34, 0.09, 0.18, 0.14, 0.11]\)  
-- True (\(y\)): \([1, 0, 0, 0, 0, 0]\)  
-- Gradient:  
-  \[
-  [0.10 - 1, 0.34 - 0, 0.09 - 0, \dots] = [-0.90, 0.34, 0.09, 0.18, 0.14, 0.11]
-  \]  
+![image](https://github.com/user-attachments/assets/f7cfb58b-a140-418e-9ffd-8b48ad485260)
 
 ---
 
@@ -395,9 +286,8 @@ Use the computed gradients to **update embeddings**, reducing the loss over time
 
 #### **SGD Update Rule**  
 For each parameter (embedding value):  
-\[
-\text{New Value} = \text{Old Value} - \eta \cdot \text{Gradient}
-\]  
+New Value = Old Value - eta .Gradient
+ 
 
 Where:  
 - \(\eta\) is the learning rate (controls step size).  
@@ -407,16 +297,12 @@ Where:
 
 #### **Example**  
 - Embedding for `"cat"` (initial): `[0.6, 0.8, -0.3]`  
-- Gradient for `"cat"` embedding: \([-0.02, 0.03, -0.01]\)  
-- Learning rate: \(\eta = 0.1\)  
+- Gradient for `"cat"` embedding: [-0.02, 0.03, -0.01]
+- Learning rate: eta = 0.1
 
 **Update**:  
-\[
-\text{New embedding} = [0.6, 0.8, -0.3] - 0.1 \cdot [-0.02, 0.03, -0.01]
-\]  
-\[
-\text{New embedding} = [0.602, 0.797, -0.299]
-\]  
+![image](https://github.com/user-attachments/assets/22bd1338-9ca4-46c6-989e-61db50ce3cf7)
+
 
 ---
 
